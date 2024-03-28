@@ -1,0 +1,28 @@
+.create-user-form {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping of form elements */
+  align-items: flex-end; /* Align items at the bottom of the flex container */
+}
+
+.create-user-form div {
+  flex: 1; /* Each form element takes equal space */
+  margin-right: 10px; /* Add margin between form elements */
+}
+
+.create-user-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.create-user-form input,
+.create-user-form select {
+  width: calc(100% - 20px); /* Inputs and selects take up full width minus margins */
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.create-user-form button {
+  width: calc(100% - 20px); /* Button takes up full width minus margins */
+  padding: 8px;
+  margin-top: 10px; /* Adjust margin to match input fields */
+}
