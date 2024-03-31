@@ -7,6 +7,7 @@ const CreateUserForm = () => {
         firstName: '',
         lastName: '',
         email: '',
+        designation: '', // Added designation field
         role: 'user'
     });
     const [response, setResponse] = useState(null);
@@ -29,6 +30,7 @@ const CreateUserForm = () => {
                 firstName: '',
                 lastName: '',
                 email: '',
+                designation: '', // Reset designation field too
                 role: 'user'
             });
         }
@@ -48,6 +50,15 @@ const CreateUserForm = () => {
                 <div>
                     <label>Email:</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                </div>
+                <div>
+                    <label>Designation:</label>
+                    <select name="designation" value={formData.designation} onChange={handleChange}>
+                        <option value="">Select Designation</option>
+                        {["Software Engineer", "Sr. Software Engineer", "Solution Enabler", "Consultant", "Architect", "Principal Architect"].map(designation => (
+                            <option key={designation} value={designation}>{designation}</option>
+                        ))}
+                    </select>
                 </div>
                 <div>
                     <label>Role:</label>

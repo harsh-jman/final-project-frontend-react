@@ -11,11 +11,17 @@ const instance = axios.create({
 export const login = async (credentials) => {
     try {
         const response = await instance.post('/api/users/login', credentials);
+        console.log(response.data)
         return response.data;
     } catch (error) {
-        throw error;
+        if (error.response) {
+            return error.response;
+        } else {
+            throw error;
+        }
     }
 };
+
 
 export const makeRequest = async (method, url, data = null) => {
     try {

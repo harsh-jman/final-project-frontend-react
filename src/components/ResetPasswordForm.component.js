@@ -1,32 +1,57 @@
 // ResetPasswordForm.component.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { resetPassword } from '../services/authService.service';
 
 const ResetPasswordForm = () => {
     const [formData, setFormData] = useState({
+        email: '',
+        currentPassword: '',
         newPassword: '',
         confirmPassword: ''
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.newPassword !== formData.confirmPassword) {
-            setError('Passwords do not match');
-            return;
+        try {
+            const response = await resetPassword(
+                formData.email,
+                formData.currentPassword,
+                formData.newPassword,
+                formData.confirmPassword
+            );
+            if (response.status === 'success') {
+                setSuccess(true);
+            } else {
+                setError(response.message);
+            }
+        } catch (error) {
+            setError('Error resetting password: ' + error.message);
         }
-        // Add logic to handle password reset here
-        // You can make an API call to reset the password
-        // Display success message if successful, or display error message if failed
+    };
+
+    const handleBackToLogin = () => {
+        navigate('/login');
     };
 
     return (
         <div className="reset-password-form-container">
             <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Email:</label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                </div>
+                <div>
+                    <label>Current Password:</label>
+                    <input type="password" name="currentPassword" value={formData.currentPassword} onChange={handleChange} />
+                </div>
                 <div>
                     <label>New Password:</label>
                     <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} />
@@ -36,7 +61,13 @@ const ResetPasswordForm = () => {
                     <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
                 </div>
                 {error && <p className="error">{error}</p>}
-                <button type="submit">Reset Password</button>
+                {success ? (
+                    <div className="success-message">
+                        Password reset successfully. Click <span onClick={handleBackToLogin} className="login-link">here</span> to login.
+                    </div>
+                ) : (
+                    <button type="submit">Reset Password</button>
+                )}
             </form>
         </div>
     );

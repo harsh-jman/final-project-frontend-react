@@ -1,0 +1,63 @@
+/* AdminPage.css */
+.admin-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* UserList.component.css */
+.user-list-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.user-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.user-list-item p {
+  margin: 0;
+  padding: 0;
+}
+
+.user-list-item input,
+.user-list-item select {
+  width: 100px; /* Adjust as needed */
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.user-list-item button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.user-list-item button.edit-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.user-list-item button.save-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.user-list-item button.cancel-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Add more styles as needed */
