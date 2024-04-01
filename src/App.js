@@ -14,6 +14,7 @@ import { logoutUser } from "./services/authService.service";
 import Layout from "./pages/layout.page"; // Import the Layout component
 import AddViewSkillsPage from "./pages/AddViewSkillsPage";
 import OwnSkillHubPage from "./pages/OwnSkillHubPage.page";
+import Approver from "./pages/Approver.page";
 
 function App() {
   return (
@@ -25,7 +26,14 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/forget-password" element={<ForgetPasswordPage />} />
-
+          <Route
+            path="/approverDesk"
+            element={
+              <ProtectedRoute>
+                <Approver />
+              </ProtectedRoute>
+            }
+          />
           {/* Protected routes */}
           <Route
             path="/admin"
@@ -69,7 +77,6 @@ function App() {
           />
           <Route path="/user/skill-hub" element={<OwnSkillHubPage />} />
 
-          {/* Define other routes here */}
         </Routes>
       </Layout>
     </Router>
