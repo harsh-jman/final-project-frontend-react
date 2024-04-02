@@ -30,6 +30,8 @@ const Navbar = () => {
                         <li><Link to="/admin">Home</Link></li>
                         <li><Link to="/admin/create-user">Create User</Link></li>
                         <li><Link to="/admin/skills">Skills</Link></li>
+                        <li><Link to="/skill-hub">Skill Hub </Link></li>
+
                         <li><Link to="/approverDesk">Approver Desk</Link></li>
 
                         {/* Add more admin-specific navigation links as needed */}
@@ -39,7 +41,7 @@ const Navbar = () => {
                     <>
                         {/* Add user-specific navigation links here */}
                         <li><Link to="/user">Home</Link></li>
-                        <li><Link to="/user/skill-hub">Skill and </Link></li>
+                        <li><Link to="/skill-hub">Skill Hub </Link></li>
                         <li><Link to="/user/profile">Profile</Link></li>
                         <li><Link to="/approverDesk">Approver Desk</Link></li>
                         

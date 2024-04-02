@@ -2,13 +2,19 @@ import React from 'react';
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@material-ui/core';
 
 const capitalizeFirstLetter = (string) => {
+  if (!string) {
+    return ''; // Return an empty string if the input string is null or undefined
+  }
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
 
 const UserSkillList = ({ userSkills }) => {
   const [selectedCertificate, setSelectedCertificate] = React.useState(null);
   const [selectedProject, setSelectedProject] = React.useState(null);
   const [selectedSkillDescription, setSelectedSkillDescription] = React.useState(null);
+  const [selectedApproverDetail, setSelectedApproverDetail] = React.useState(null);
+  const [selectedStatusDetail, setSelectedStatusDetail] = React.useState(null);
 
   const handleCertificateClick = (certificate) => {
     setSelectedCertificate(certificate);
@@ -22,11 +28,34 @@ const UserSkillList = ({ userSkills }) => {
     setSelectedSkillDescription(description);
   };
 
+  const handleApproverDetailClick = (approverDetail) => {
+    setSelectedApproverDetail(approverDetail);
+  };
+
+  const handleStatusDetailClick = (statusDetail) => {
+    setSelectedStatusDetail(statusDetail);
+  };
+
   const handleCloseDialog = () => {
     setSelectedCertificate(null);
     setSelectedProject(null);
     setSelectedSkillDescription(null);
+    setSelectedApproverDetail(null);
+    setSelectedStatusDetail(null);
   };
+
+  function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    });
+    return formattedDate;
+  }
 
   return (
     <div>
@@ -70,13 +99,15 @@ const UserSkillList = ({ userSkills }) => {
                       'No project experience'
                     )}
                   </TableCell>
-                  <TableCell>{skill.approverDetailId ? skill.approverDetailId.status : 'Waiting'}</TableCell>
                   <TableCell>
-                    {skill.approverDetailId.approverUserId ? (
-                      `${skill.approverDetailId.approverUserId.firstName || 'Approver Allotment'} ${skill.approverDetailId.approverUserId.lastName || 'in Progress'}`
-                    ) : (
-                      'Waiting'
-                    )}
+                    <Button color="primary" onClick={() => handleStatusDetailClick(skill.approverDetailId)}>
+                      {skill.approverDetailId.status}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button color="primary" onClick={() => handleApproverDetailClick(skill.approverDetailId)}>
+                      {skill.approverDetailId.approverUserId ? `${skill.approverDetailId.approverUserId.firstName || 'Approver Allotment'} ${skill.approverDetailId.approverUserId.lastName || 'in Progress'}` : 'Waiting'}
+                    </Button>
                   </TableCell>
                   <TableCell>{new Date(skill.createdAt).toLocaleDateString()}</TableCell>
                 </TableRow>
@@ -87,6 +118,8 @@ const UserSkillList = ({ userSkills }) => {
       ) : (
         <Typography>No user skills found. Please add a skill.</Typography>
       )}
+
+      {/* Certificate details dialog */}
       <Dialog open={!!selectedCertificate} onClose={handleCloseDialog}>
         <DialogTitle>Certificate Details</DialogTitle>
         <DialogContent>
@@ -114,6 +147,8 @@ const UserSkillList = ({ userSkills }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Project experience details dialog */}
       <Dialog open={!!selectedProject} onClose={handleCloseDialog}>
         <DialogTitle>Project Experience Details</DialogTitle>
         <DialogContent>
@@ -139,10 +174,12 @@ const UserSkillList = ({ userSkills }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Skill description dialog */}
       <Dialog open={!!selectedSkillDescription} onClose={handleCloseDialog}>
         <DialogTitle>Skill Description</DialogTitle>
         <DialogContent>
-          <Typography>{selectedSkillDescription}</Typography>
+          <Typography>{capitalizeFirstLetter(selectedSkillDescription)}</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
@@ -150,6 +187,53 @@ const UserSkillList = ({ userSkills }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Approver details dialog */}
+      <Dialog open={!!selectedApproverDetail} onClose={handleCloseDialog}>
+        <DialogTitle>Approver Details</DialogTitle>
+        <DialogContent>
+          {selectedApproverDetail && (
+            <div>
+              <Typography><strong>Name:</strong> {capitalizeFirstLetter(selectedApproverDetail.approverUserId.firstName)} {capitalizeFirstLetter(selectedApproverDetail.approverUserId.lastName)}</Typography>
+              <Typography><strong>Email:</strong> <a href={`mailto:${selectedApproverDetail.approverUserId.email}`}>{selectedApproverDetail.approverUserId.email}</a></Typography>
+              <Typography><strong>Designation:</strong> {capitalizeFirstLetter(selectedApproverDetail.approverUserId.designation)}</Typography>
+              <Typography><strong>Role:</strong> {capitalizeFirstLetter(selectedApproverDetail.approverUserId.role)}</Typography>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Status details dialog */}
+      <Dialog open={!!selectedStatusDetail} onClose={handleCloseDialog}>
+  <DialogTitle>Status Details</DialogTitle>
+  <DialogContent>
+    {selectedStatusDetail && (
+      <div>
+        <Typography><strong>Status:</strong> {selectedStatusDetail.status || ''}</Typography>
+        {selectedStatusDetail.comments !== undefined && (
+          <Typography><strong>Comments:</strong> {selectedStatusDetail.comments || ''}</Typography>
+        )}
+        {selectedStatusDetail.rating !== undefined && (
+          <Typography><strong>Rating:</strong> {selectedStatusDetail.rating || ''}</Typography>
+        )}
+        {(selectedStatusDetail.comments !== undefined || selectedStatusDetail.rating !== undefined) && (
+          <Typography><strong>Timestamp:</strong> {formatTimestamp(selectedStatusDetail.updatedAt) || ''}</Typography>
+        )}
+      </div>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDialog} color="primary">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </div>
   );
 };

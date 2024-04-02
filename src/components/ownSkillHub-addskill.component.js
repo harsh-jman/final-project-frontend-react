@@ -23,7 +23,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { addUserSkills, getAllSkills } from "../services/skills.service";
 
-const OwnSkillHubPage = () => {
+const OwnSkillHubPage = ({onSkillAdded}) => {
   const [open, setOpen] = useState(false);
   const [skillList, setSkillList] = useState([]);
   const [selectedSkillId, setSelectedSkillId] = useState("");
@@ -53,6 +53,7 @@ const OwnSkillHubPage = () => {
       console.error('Error fetching skills:', error);
     }
   };
+  
 
   useEffect(() => {
     fetchSkills();
@@ -92,7 +93,7 @@ const OwnSkillHubPage = () => {
     setConfirmDialogOpen(true);
   };
 
-  const handleConfirmDialogClose = (confirmed) => {
+  const handleConfirmDialogClose = (confirmed ) => {
     if (confirmed) {
       const data = {
         skillId: selectedSkillId,
@@ -120,6 +121,8 @@ const OwnSkillHubPage = () => {
           setSnackbarMessage('Skill submitted successfully!');
           setSnackbarOpen(true);
           handleClose();
+          // Fetch skills again after submission
+          onSkillAdded();
         })
         .catch((error) => {
           console.error('Error submitting skill:', error);

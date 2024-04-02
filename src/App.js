@@ -75,7 +75,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/user/skill-hub" element={<OwnSkillHubPage />} />
+          <Route path="/skill-hub" element={<ProtectedRoute>
+            <OwnSkillHubPage />
+              </ProtectedRoute>} />
 
         </Routes>
       </Layout>
