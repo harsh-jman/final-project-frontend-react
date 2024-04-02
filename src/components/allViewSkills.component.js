@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Alert } from '@mui/material';
-import ConfirmationModal from './ConfirmationModal.component'; // Import the ConfirmationModal component
 
-const SkillList = ({ skills }) => {
+const SkillList = ({ skills, addSkill }) => {
   const [showAddSkillDialog, setShowAddSkillDialog] = useState(false);
   const [newSkill, setNewSkill] = useState({ skillName: '', description: '' });
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -11,6 +10,7 @@ const SkillList = ({ skills }) => {
 
   // Function to handle adding a new skill
   const handleAddSkill = () => {
+    // Open the dialog for adding a new skill
     setShowAddSkillDialog(true);
   };
 
@@ -23,9 +23,9 @@ const SkillList = ({ skills }) => {
     }
     // Assuming there's a function to save the new skill
     // saveNewSkill(newSkill);
-    console.log('New Skill:', newSkill);
     // Reset the newSkill state
     setNewSkill({ skillName: '', description: '' });
+    addSkill(newSkill);
     // Close the add skill dialog
     setShowAddSkillDialog(false);
     // Show success message
@@ -78,13 +78,29 @@ const SkillList = ({ skills }) => {
           <Button onClick={handleSaveSkill} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
-      {skills.map((skill, index) => (
-        <div key={index}>
-          <Typography variant="body1">{skill.skillName}</Typography>
-          <Typography variant="body2">{skill.description}</Typography>
-        </div>
-      ))}
-      <Snackbar open={showSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+      {skills.length > 0 && (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Sno</TableCell>
+                <TableCell>Skill Name</TableCell>
+                <TableCell>Description</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {skills.map((skill, index) => (
+                <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{skill.skillName}</TableCell>
+                  <TableCell>{skill.description}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+      <Snackbar open={showSnackbar} autoHideDuration={3} onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity="success">
           {snackbarMessage}
         </Alert>

@@ -40,7 +40,7 @@ export const makeRequest = async (method, url, data = null) => {
             data,
             headers
         });
-
+        
         return response.data;
     } catch (error) {
         throw error;

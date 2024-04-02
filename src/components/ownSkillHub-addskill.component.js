@@ -23,7 +23,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { addUserSkills, getAllSkills } from "../services/skills.service";
 
-const OwnSkillHubPage = ({onSkillAdded}) => {
+const OwnSkillHubPage = () => {
   const [open, setOpen] = useState(false);
   const [skillList, setSkillList] = useState([]);
   const [selectedSkillId, setSelectedSkillId] = useState("");
@@ -122,7 +122,7 @@ const OwnSkillHubPage = ({onSkillAdded}) => {
           setSnackbarOpen(true);
           handleClose();
           // Fetch skills again after submission
-          onSkillAdded();
+          
         })
         .catch((error) => {
           console.error('Error submitting skill:', error);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography } from '@material-ui/core';
 import UserSkillList from '../components/ownSkillHub.component';
 import { getUserSkills } from '../services/skills.service'; // Import the function to fetch user skills
@@ -17,17 +17,22 @@ const OwnSkillHubPage = () => {
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     fetchUserSkills();
   }, []);
+
+  // useEffect hook to listen for changes in userSkills and refetch data
+  useEffect(() => {
+    fetchUserSkills(); // Refetch user skills whenever userSkills changes
+  }, [userSkills]);
 
   return (
     <div>
       <Typography variant="h3">My Skill Hub</Typography>
       <AddSkillButton /> {/* Integrating the AddSkillButton component */}
-      <Button variant="outlined" color="primary" onClick={fetchUserSkills}>
+      {/* <Button variant="outlined" color="primary" onClick={fetchUserSkills}>
         Refresh
-      </Button>
+      </Button> */}
       <UserSkillList userSkills={userSkills} />
     </div>
   );

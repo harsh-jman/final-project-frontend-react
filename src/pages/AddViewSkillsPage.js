@@ -22,7 +22,7 @@ const AddViewSkillsPage = () => {
   return (
     <div>
       <h2>Skills</h2>
-      <SkillList skills={skills} />
+      <SkillList skills={skills} addSkill={addSkill} />
     </div>
   );
 };
