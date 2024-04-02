@@ -3,8 +3,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.page";
-import AdminPage from "./pages/AdminPage.page";
-import AdminCreateUser from "./pages/admin-createuser";
+import UserManagement from "./pages/userManagement.page";
 import ResetPasswordPage from "./pages/resetPassword.page";
 import UserPage from "./pages/user.page";
 import ProfilePage from "./pages/profile.page";
@@ -15,6 +14,7 @@ import Layout from "./pages/layout.page"; // Import the Layout component
 import AddViewSkillsPage from "./pages/AddViewSkillsPage";
 import OwnSkillHubPage from "./pages/OwnSkillHubPage.page";
 import Approver from "./pages/Approver.page";
+import AdminPage from "./pages/admin.page";
 
 function App() {
   return (
@@ -55,7 +55,7 @@ function App() {
             path="/admin/create-user"
             element={
               <ProtectedRoute>
-                <AdminCreateUser />
+                <UserManagement />
               </ProtectedRoute>
             }
           />

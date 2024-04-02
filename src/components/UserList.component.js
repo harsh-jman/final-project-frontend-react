@@ -1,203 +1,257 @@
-import React, { useState, useEffect } from "react";
-import ConfirmationModal from "./ConfirmationModal.component";
+import React, { useState } from "react";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, TextField, MenuItem, Switch } from '@mui/material';
 import { updateUserDetails, sendResetEmail, deleteUser } from "../services/authService.service";
-import "./UserList.css";
+
+const designationOptions = ["Software Engineer", "Sr. Software Engineer", "Solution Enabler", "Consultant", "Architect", "Principal Architect"];
+const roleOptions = ["user", "admin"];
 
 const UserList = ({ users }) => {
+  const [selectedUser, setSelectedUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [editedUser, setEditedUser] = useState(null);
-  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
-  const [showResetConfirmation, setShowResetConfirmation] = useState(false);
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [tempEditedUser, setTempEditedUser] = useState(null);
-  const [resetEmail, setResetEmail] = useState(null);
-  const [userToDelete, setUserToDelete] = useState(null);
-
-  useEffect(() => {
-    // Set tempEditedUser when entering edit mode
-    if (editMode) {
-      setTempEditedUser(editedUser);
-    }
-  }, [editMode, editedUser]);
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [resetPasswordConfirmation, setResetPasswordConfirmation] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const handleEdit = (user) => {
     setEditMode(true);
-    setEditedUser(user);
+    setSelectedUser(user);
+    setTempEditedUser({ ...user });
   };
 
   const handleSave = async () => {
     try {
+      console.log(tempEditedUser)
       await updateUserDetails(tempEditedUser);
-      setShowSaveConfirmation(false);
       setEditMode(false);
-      setEditedUser(null);
-      setTempEditedUser(null); // Reset tempEditedUser
-      alert("User details updated successfully");
+      setSelectedUser(null);
+      setTempEditedUser(null);
+      setSnackbarMessage('User details updated successfully');
+      setSnackbarOpen(true);
     } catch (error) {
       console.error("Error updating user details:", error);
-      // Handle error
     }
   };
 
-  const handleCancelSave = () => {
-    setShowSaveConfirmation(false);
-    setEditMode(false);
-    setEditedUser(null);
-    setTempEditedUser(null); // Reset tempEditedUser
+  const handleResetPassword = (user) => {
+    setSelectedUser(user);
+    setResetPasswordConfirmation(true);
+  };
+
+  const handleResetPasswordConfirm = async () => {
+    try {
+      await sendResetEmail(selectedUser.email);
+      setResetPasswordConfirmation(false);
+      setSnackbarMessage('Password reset email sent successfully');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
+    }
+  };
+
+  const handleDeleteUser = (user) => {
+    setSelectedUser(user);
+    setDeleteConfirmation(true);
+  };
+
+  const handleDeleteUserConfirm = async () => {
+    try {
+      await deleteUser(selectedUser.email);
+      setDeleteConfirmation(false);
+      setSelectedUser(null);
+      setSnackbarMessage('User deleted successfully');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    const newValue = name === "isActive" ? value === "true" : value;
     setTempEditedUser((prevUser) => ({
       ...prevUser,
-      [name]: value,
+      [name]: newValue,
+    }));
+    console.log(tempEditedUser)
+  };
+
+  const handleToggleChange = (name) => (event) => {
+    setTempEditedUser((prevUser) => ({
+      ...prevUser,
+      [name]: event.target.checked,
     }));
   };
 
-  const handleResetPassword = (email) => {
-    setResetEmail(email);
-    setShowResetConfirmation(true);
+  const handleCancel = () => {
+    setEditMode(false);
+    setSelectedUser(null);
+    setTempEditedUser(null);
   };
 
-  const handleDeleteUser = (user) => {
-    setUserToDelete(user);
-    setShowDeleteConfirmation(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      await deleteUser(userToDelete.email);
-      setShowDeleteConfirmation(false);
-      alert("User deleted successfully");
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      // Handle error
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirmation(false);
-    setUserToDelete(null);
-  };
-
-  const handleConfirmReset = async () => {
-    try {
-      await sendResetEmail(resetEmail);
-      setShowResetConfirmation(false);
-      alert("Password reset email sent successfully");
-    } catch (error) {
-      console.error("Error sending password reset email:", error);
-      // Handle error
-    }
-  };
-
-  const handleCancelReset = () => {
-    setShowResetConfirmation(false);
-    setResetEmail(null);
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
-    <div className="user-list-container">
-      {users.map((user, index) => (
-        <div className="user-item" key={user._id}>
-          <p className="serial-number">S. No: {index + 1}</p>
-          {editMode && editedUser === user ? (
-            <div className="edit-mode">
-              {/* Conditionally render input fields only if tempEditedUser is not null */}
-              {tempEditedUser && (
-                <>
-                  <input
-                    type="text"
+    <Paper style={{ width: '100%', marginBottom: '2rem' }}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>S. No</TableCell>
+            <TableCell>First Name</TableCell>
+            <TableCell>Last Name</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Designation</TableCell>
+            <TableCell>Role</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {users.map((user, index) => (
+            <TableRow key={user._id} hover>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell>
+                {editMode && selectedUser === user ? (
+                  <TextField
                     name="firstName"
                     value={tempEditedUser.firstName}
                     onChange={handleInputChange}
                   />
-                  <input
-                    type="text"
+                ) : (
+                  user.firstName
+                )}
+              </TableCell>
+              <TableCell>
+                {editMode && selectedUser === user ? (
+                  <TextField
                     name="lastName"
                     value={tempEditedUser.lastName}
                     onChange={handleInputChange}
                   />
-                  <input
-                    type="text"
+                ) : (
+                  user.lastName
+                )}
+              </TableCell>
+              <TableCell>
+                {editMode && selectedUser === user ? (
+                  <TextField
                     name="email"
                     value={tempEditedUser.email}
-                    readOnly
+                    onChange={handleInputChange}
                   />
-                  <select
+                ) : (
+                  user.email
+                )}
+              </TableCell>
+              <TableCell>
+                {editMode && selectedUser === user ? (
+                  <TextField
+                    select
                     name="designation"
                     value={tempEditedUser.designation}
                     onChange={handleInputChange}
                   >
-                    {["Software Engineer", "Sr. Software Engineer", "Solution Enabler", "Consultant", "Architect", "Principal Architect"].map(designation => (
-                      <option key={designation} value={designation}>{designation}</option>
+                    {designationOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
                     ))}
-                  </select>
-                  <select
+                  </TextField>
+                ) : (
+                  user.designation
+                )}
+              </TableCell>
+              <TableCell>
+                {editMode && selectedUser === user ? (
+                  <TextField
+                    select
                     name="role"
                     value={tempEditedUser.role}
                     onChange={handleInputChange}
                   >
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
-                  </select>
-                  <select
+                    {roleOptions.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                ) : (
+                  user.role
+                )}
+              </TableCell>
+              <TableCell>
+                {editMode && selectedUser === user ? (
+                  <Switch
                     name="isActive"
-                    value={tempEditedUser.isActive}
-                    onChange={handleInputChange}
-                  >
-                    <option value={true}>Active</option>
-                    <option value={false}>Inactive</option>
-                  </select>
-                </>
-              )}
-            </div>
-          ) : (
-            <div className="view-mode">
-              <p>{user.firstName}</p>
-              <p>{user.lastName}</p>
-              <p>{user.email}</p>
-              <p>{user.designation}</p> {/* Display designation */}
-              <p>{user.role}</p>
-              <p>{user.isActive ? "Active" : "Inactive"}</p>
-            </div>
-          )}
-          {editMode && editedUser === user ? (
-            <>
-              <button onClick={() => setShowSaveConfirmation(true)}>Save</button>
-              <button onClick={handleCancelSave}>Cancel</button>
-            </>
-          ) : (
-            <>
-              <button onClick={() => handleEdit(user)}>Edit Details</button>
-              <button onClick={() => handleResetPassword(user.email)}>Reset Password</button>
-              <button onClick={() => handleDeleteUser(user)}>Delete User</button>
-            </>
-          )}
-        </div>
-      ))}
-      {showSaveConfirmation && (
-        <ConfirmationModal
-          message={`Are you sure you want to save the changes for ${tempEditedUser.firstName} ${tempEditedUser.lastName}?`}
-          onConfirm={handleSave}
-          onCancel={handleCancelSave}
-        />
-      )}
-      {showResetConfirmation && (
-        <ConfirmationModal
-          message={`Are you sure you want to reset the password for ${resetEmail}?`}
-          onConfirm={handleConfirmReset}
-          onCancel={handleCancelReset}
-        />
-      )}
-      {showDeleteConfirmation && (
-        <ConfirmationModal
-          message={`Are you sure you want to delete the user ${userToDelete.firstName} ${userToDelete.lastName}?`}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
-    </div>
+                    checked={tempEditedUser.isActive}
+                    onChange={handleToggleChange('isActive')}
+                  />
+                ) : (
+                  user.isActive ? "Active" : "Inactive"
+                )}
+              </TableCell>
+              <TableCell>
+                {editMode && selectedUser === user ? (
+                  <>
+                    <Button onClick={handleSave}>Save</Button>
+                    <Button onClick={handleCancel}>Cancel</Button>
+                  </>
+                ) : (
+                  <>
+                    <Button onClick={() => handleEdit(user)}>Edit Details</Button>
+                    <Button onClick={() => handleResetPassword(user)}>Reset Password</Button>
+                    <Button onClick={() => handleDeleteUser(user)}>Delete User</Button>
+                  </>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Dialog
+        open={deleteConfirmation}
+        onClose={() => setDeleteConfirmation(false)}
+      >
+        <DialogTitle>{"Delete User?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete the user?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmation(false)}>Cancel</Button>
+          <Button onClick={handleDeleteUserConfirm} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={resetPasswordConfirmation}
+        onClose={() => setResetPasswordConfirmation(false)}
+      >
+        <DialogTitle>{"Reset Password?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to reset the password?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setResetPasswordConfirmation(false)}>Cancel</Button>
+          <Button onClick={handleResetPasswordConfirm} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
+    </Paper>
   );
 };
 
