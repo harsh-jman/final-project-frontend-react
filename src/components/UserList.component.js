@@ -33,7 +33,7 @@ const designationOptions = [
 ];
 const roleOptions = ["user", "admin"];
 
-const UserList = ({ users }) => {
+const UserList = ({ users, onUsersChange }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [tempEditedUser, setTempEditedUser] = useState(null);
@@ -60,6 +60,11 @@ const UserList = ({ users }) => {
       setTempEditedUser(null);
       setSnackbarMessage("User details updated successfully");
       setSnackbarOpen(true);
+
+      // Call the callback function to trigger useEffect in parent
+      if (typeof onUsersChange === "function") {
+        onUsersChange();
+      }
     } catch (error) {
       console.error("Error updating user details:", error);
     }

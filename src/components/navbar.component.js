@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../services/authService.service";
 import Cookies from "js-cookie"; // Import Cookies library
@@ -33,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#d32f2f", // Darker shade of red on hover
     },
   },
+  activeButton: {
+    color: "#D32F2F",
+  },
 }));
 
 const Navbar = () => {
@@ -41,7 +45,7 @@ const Navbar = () => {
   const [showSmallNav, setShowSmallNav] = useState(false);
   const [userName, setUserName] = useState("");
   const classes = useStyles(); // Use the custom styles
-
+  const location = useLocation(); // Get the current location
   const token = Cookies.get("token");
 
   useEffect(() => {
@@ -82,10 +86,26 @@ const Navbar = () => {
           </Typography>
 
           <div className="bigNav">
-            <Button component={Link} to="/" color="inherit">
+            <Button
+              component={Link}
+              to={role === "user" ? "/user" : "/admin"}
+              color="inherit"
+              className={
+                location.pathname === "/user" || location.pathname === "/admin"
+                  ? classes.activeButton
+                  : ""
+              }
+            >
               Home
             </Button>
-            <Button component={Link} to="/skill-hub" color="inherit">
+            <Button
+              component={Link}
+              to="/skill-hub"
+              color="inherit"
+              className={
+                location.pathname === "/skill-hub" ? classes.activeButton : ""
+              }
+            >
               My Skill Hub
             </Button>
             {role === "admin" && (
@@ -94,25 +114,90 @@ const Navbar = () => {
                   component={Link}
                   to="/admin/create-user"
                   color="inherit"
+                  className={
+                    location.pathname === "/admin/create-user"
+                      ? classes.activeButton
+                      : ""
+                  }
                 >
                   User Management
                 </Button>
-                <Button component={Link} to="/admin/skills" color="inherit">
+                <Button
+                  component={Link}
+                  to="/admin/skills"
+                  color="inherit"
+                  className={
+                    location.pathname === "/admin/skills"
+                      ? classes.activeButton
+                      : ""
+                  }
+                >
                   Skill Management
                 </Button>
-                <Button component={Link} to="/approverDesk" color="inherit">
+                <Button
+                  component={Link}
+                  to="/approverDesk"
+                  color="inherit"
+                  className={
+                    location.pathname === "/approverDesk"
+                      ? classes.activeButton
+                      : ""
+                  }
+                >
                   Approver Desk
+                </Button>
+                <Button
+                  component={Link}
+                  to="/admin/ml"
+                  color="inherit"
+                  className={
+                    location.pathname === "/admin/ml"
+                      ? classes.activeButton
+                      : ""
+                  }
+                >
+                  Ml
+                </Button>
+                <Button
+                  component={Link}
+                  to="/admin/trigger"
+                  color="inherit"
+                  className={
+                    location.pathname === "/admin/trigger"
+                      ? classes.activeButton
+                      : ""
+                  }
+                >
+                  Tigger
                 </Button>
               </>
             )}
             {role === "user" && (
               <>
-                <Button component={Link} to="/approverDesk" color="inherit">
+                <Button
+                  component={Link}
+                  to="/approverDesk"
+                  color="inherit"
+                  className={
+                    location.pathname === "/approverDesk"
+                      ? classes.activeButton
+                      : ""
+                  }
+                >
                   Approver Desk
                 </Button>
               </>
             )}
-            <Button component={Link} to="/user/profile" color="inherit">
+            <Button
+              component={Link}
+              to="/user/profile"
+              color="inherit"
+              className={
+                location.pathname === "/user/profile"
+                  ? classes.activeButton
+                  : ""
+              }
+            >
               Profile
             </Button>
           </div>
@@ -155,7 +240,14 @@ const Navbar = () => {
                 gao: "8px",
               }}
             >
-              <Button component={Link} to="/" color="inherit">
+              <Button
+                component={Link}
+                to="/"
+                color="inherit"
+                className={
+                  location.pathname === "/" ? classes.activeButton : ""
+                }
+              >
                 Home
               </Button>
               <Button
@@ -163,6 +255,9 @@ const Navbar = () => {
                 to="/skill-hub"
                 color="inherit"
                 onClick={() => setShowSmallNav(false)}
+                className={
+                  location.pathname === "/skill-hub" ? classes.activeButton : ""
+                }
               >
                 My Skill Hub
               </Button>
@@ -173,6 +268,11 @@ const Navbar = () => {
                     to="/admin/create-user"
                     color="inherit"
                     onClick={() => setShowSmallNav(false)}
+                    className={
+                      location.pathname === "/admin/create-user"
+                        ? classes.activeButton
+                        : ""
+                    }
                   >
                     User Management
                   </Button>
@@ -181,6 +281,11 @@ const Navbar = () => {
                     to="/admin/skills"
                     color="inherit"
                     onClick={() => setShowSmallNav(false)}
+                    className={
+                      location.pathname === "/admin/skills"
+                        ? classes.activeButton
+                        : ""
+                    }
                   >
                     Skill Management
                   </Button>
@@ -189,6 +294,11 @@ const Navbar = () => {
                     to="/approverDesk"
                     color="inherit"
                     onClick={() => setShowSmallNav(false)}
+                    className={
+                      location.pathname === "/approverDesk"
+                        ? classes.activeButton
+                        : ""
+                    }
                   >
                     Approver Desk
                   </Button>
@@ -201,6 +311,11 @@ const Navbar = () => {
                     to="/approverDesk"
                     color="inherit"
                     onClick={() => setShowSmallNav(false)}
+                    className={
+                      location.pathname === "/approverDesk"
+                        ? classes.activeButton
+                        : ""
+                    }
                   >
                     Approver Desk
                   </Button>
@@ -211,6 +326,11 @@ const Navbar = () => {
                 to="/user/profile"
                 color="inherit"
                 onClick={() => setShowSmallNav(false)}
+                className={
+                  location.pathname === "/user/profile"
+                    ? classes.activeButton
+                    : ""
+                }
               >
                 Profile
               </Button>

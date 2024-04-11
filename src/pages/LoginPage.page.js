@@ -21,6 +21,7 @@ const LoginPage = () => {
       setIsLoading(false);
       handleLoginResponse(response);
     } catch (error) {
+      setIsLoading(false);
       setError("Error occurred during login");
     }
   };
@@ -34,7 +35,7 @@ const LoginPage = () => {
     } else if (response.message === "Login successful") {
       const role = response.role;
       const token = response.token;
-      const name = response.firstName
+      const name = response.firstName;
       // Calculate expiration time in 1 hour
 
       Cookies.set("username", name, { expires: 1 / 24 });

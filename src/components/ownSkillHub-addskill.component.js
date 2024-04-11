@@ -24,7 +24,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import { addUserSkills, getAllSkills } from "../services/skills.service";
 import { Link } from "react-router-dom";
 
-const OwnSkillHubPage = () => {
+const OwnSkillHubPage = ({ addSkill }) => {
   const [open, setOpen] = useState(false);
   const [skillList, setSkillList] = useState([]);
   const [selectedSkillId, setSelectedSkillId] = useState("");
@@ -132,7 +132,7 @@ const OwnSkillHubPage = () => {
 
           setTimeout(() => {
             setLinkDialogOpen(false); // Close link dialog after 2 seconds
-          }, 3000);
+          }, 2000);
           // Fetch skills again after submission
         })
         .catch((error) => {
@@ -154,6 +154,7 @@ const OwnSkillHubPage = () => {
         });
     }
     setConfirmDialogOpen(false);
+    addSkill();
   };
 
   const handleSnackbarClose = () => {

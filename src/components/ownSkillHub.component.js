@@ -28,7 +28,7 @@ const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-const UserSkillList = ({ userSkills }) => {
+const UserSkillList = ({ userSkills, fetchSkill }) => {
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedSkillDescription, setSelectedSkillDescription] =
@@ -117,7 +117,8 @@ const UserSkillList = ({ userSkills }) => {
           justifyContent: "space-between",
         }}
       >
-        <AddSkillButton /> {/* Integrating the AddSkillButton component */}
+        <AddSkillButton addSkill={fetchSkill} />{" "}
+        {/* Integrating the AddSkillButton component */}
         <div
           style={{
             marginTop: "12px",

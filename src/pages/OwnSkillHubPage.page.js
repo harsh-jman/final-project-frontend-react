@@ -36,7 +36,7 @@ const OwnSkillHubPage = () => {
       {/* <Button variant="outlined" color="primary" onClick={fetchUserSkills}>
         Refresh
       </Button> */}
-      <UserSkillList userSkills={userSkills} />
+      <UserSkillList userSkills={userSkills} fetchSkill={fetchUserSkills} />
       {isLoading && <Loading />}
     </div>
   );

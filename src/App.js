@@ -17,6 +17,7 @@ import Approver from "./pages/Approver.page";
 import AdminPage from "./pages/admin.page";
 import HomePage from "./pages/HomePage";
 import TemperatureRecommendationForm from "./components/ml.component";
+import TriggerPage from "./pages/triggerPage";
 
 function App() {
   return (
@@ -64,6 +65,14 @@ function App() {
             }
           />
           <Route
+            path="/admin/trigger"
+            element={
+              <ProtectedRoute>
+                <TriggerPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/create-user"
             element={
               <ProtectedRoute>
@@ -71,11 +80,11 @@ function App() {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/admin/ML"
             element={
               <ProtectedRoute>
-                <TemperatureRecommendationForm/>
+                <TemperatureRecommendationForm />
               </ProtectedRoute>
             }
           />

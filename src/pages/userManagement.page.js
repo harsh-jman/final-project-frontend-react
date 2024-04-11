@@ -31,10 +31,15 @@ const UserManagement = () => { // Change the component name to start with an upp
     setFormKey(prevKey => prevKey + 1); // Update formKey to trigger re-render
   };
 
+  const handleUsersChange = () => {
+    // Run the useEffect in the parent component again
+    setFormKey(prevKey => prevKey + 1);
+  };
+
   return (
     <div style={{paddingTop: '90px', width: '95%', margin: 'auto'}}>
       <UserForm onChange={handleFormChange} />
-      <UserList key={formKey} users={users} /> {/* Use key to trigger re-render */}
+      <UserList key={formKey} users={users} onUsersChange={handleUsersChange}/> {/* Use key to trigger re-render */}
       {isLoading && <Loading/>}
     </div>
   );
