@@ -15,6 +15,8 @@ import AddViewSkillsPage from "./pages/AddViewSkillsPage";
 import OwnSkillHubPage from "./pages/OwnSkillHubPage.page";
 import Approver from "./pages/Approver.page";
 import AdminPage from "./pages/admin.page";
+import HomePage from "./pages/HomePage";
+import TemperatureRecommendationForm from "./components/ml.component";
 
 function App() {
   return (
@@ -23,6 +25,15 @@ function App() {
         {" "}
         {/* Use the Layout component */}
         <Routes>
+          <Route
+            path="/"
+            exact
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/forget-password" element={<ForgetPasswordPage />} />
@@ -34,6 +45,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           {/* Protected routes */}
           <Route
             path="/admin"
@@ -59,6 +71,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/admin/ML"
+            element={
+              <ProtectedRoute>
+                <TemperatureRecommendationForm/>
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/user"
             element={
@@ -75,10 +95,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/skill-hub" element={<ProtectedRoute>
-            <OwnSkillHubPage />
-              </ProtectedRoute>} />
-
+          <Route
+            path="/skill-hub"
+            element={
+              <ProtectedRoute>
+                <OwnSkillHubPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Layout>
     </Router>

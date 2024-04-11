@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Alert } from '@mui/material';
+import './allViewSkills.css'
 
 const SkillList = ({ skills, addSkill }) => {
   const [showAddSkillDialog, setShowAddSkillDialog] = useState(false);
@@ -50,7 +51,7 @@ const SkillList = ({ skills, addSkill }) => {
   return (
     <div>
       {skills.length === 0 && <Typography variant="body1">No skills found. Create one!</Typography>}
-      <div>
+      <div className='skillBtn'>
         <Button variant="contained" color="primary" onClick={handleAddSkill}>Add Skill</Button>
       </div>
       <Dialog open={showAddSkillDialog} onClose={() => setShowAddSkillDialog(false)}>
@@ -79,7 +80,7 @@ const SkillList = ({ skills, addSkill }) => {
         </DialogActions>
       </Dialog>
       {skills.length > 0 && (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className='tableCon'>
           <Table>
             <TableHead>
               <TableRow>
@@ -92,7 +93,7 @@ const SkillList = ({ skills, addSkill }) => {
               {skills.map((skill, index) => (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{skill.skillName}</TableCell>
+                  <TableCell className='skillname'>{skill.skillName}</TableCell>
                   <TableCell>{skill.description}</TableCell>
                 </TableRow>
               ))}

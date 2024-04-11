@@ -1,45 +1,53 @@
+.skillBtn {
+  margin-bottom: 16px;
+}
+
 .skill-list-container {
-    margin-top: 20px;
-  }
-  
-  .skill-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .skill-item:last-child {
-    border-bottom: none;
-  }
-  
-  .skill-details {
-    flex-grow: 1;
-  }
-  
-  .skill-name {
-    font-weight: bold;
-  }
-  
-  .skill-buttons {
-    display: flex;
-    align-items: center;
-  }
-  
-  .skill-buttons button {
-    margin-left: 10px;
-  }
-  
-  .add-skill-button {
-    margin-top: 20px;
-  }
-  
-  .add-skill-form {
-    display: none;
-  }
-  
-  .add-skill-form.show {
-    display: block;
-  }
-  
+  margin-top: 20px;
+}
+
+.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.skill-item:last-child {
+  border-bottom: none;
+}
+
+.skill-details {
+  flex-grow: 1;
+}
+
+.skillname {
+  font-weight: bold;
+}
+
+.skill-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.skill-buttons button {
+  margin-left: 10px;
+}
+
+.add-skill-button {
+  margin-top: 20px;
+}
+
+.add-skill-form {
+  display: none;
+}
+
+.add-skill-form.show {
+  display: block;
+}
+
+.tableCon {
+  border: 1px solid black;
+  margin-bottom: 16px;
+}

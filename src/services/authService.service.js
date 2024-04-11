@@ -39,6 +39,7 @@ export const logoutUser = () => {
     // Clear cookies or any other storage used for authentication
     Cookies.remove('token');
     Cookies.remove('role');
+    Cookies.remove('username');
 };
 
 

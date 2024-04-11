@@ -19,9 +19,10 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from "@material-ui/icons/Info";
 
 import { addUserSkills, getAllSkills } from "../services/skills.service";
+import { Link } from "react-router-dom";
 
 const OwnSkillHubPage = () => {
   const [open, setOpen] = useState(false);
@@ -35,25 +36,29 @@ const OwnSkillHubPage = () => {
   const [issueDate, setIssueDate] = useState("");
   const [validityPeriodMonths, setValidityPeriodMonths] = useState("");
   const [certificateId, setCertificateId] = useState("");
-  const [certificateSupportedDocumentLink, setCertificateSupportedDocumentLink] = useState("");
+  const [
+    certificateSupportedDocumentLink,
+    setCertificateSupportedDocumentLink,
+  ] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [projectSupportedDocumentLink, setProjectSupportedDocumentLink] = useState("");
+  const [projectSupportedDocumentLink, setProjectSupportedDocumentLink] =
+    useState("");
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
 
   const fetchSkills = async () => {
     try {
       const skills = await getAllSkills();
       setSkillList(skills);
     } catch (error) {
-      console.error('Error fetching skills:', error);
+      console.error("Error fetching skills:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchSkills();
@@ -85,7 +90,9 @@ const OwnSkillHubPage = () => {
   const handleSkillChange = (event) => {
     const selectedSkill = event.target.value;
     setSkill(selectedSkill);
-    const selectedSkillObject = skillList.find(skillItem => skillItem.skillName === selectedSkill);
+    const selectedSkillObject = skillList.find(
+      (skillItem) => skillItem.skillName === selectedSkill
+    );
     setSelectedSkillId(selectedSkillObject._id);
   };
 
@@ -93,7 +100,7 @@ const OwnSkillHubPage = () => {
     setConfirmDialogOpen(true);
   };
 
-  const handleConfirmDialogClose = (confirmed ) => {
+  const handleConfirmDialogClose = (confirmed) => {
     if (confirmed) {
       const data = {
         skillId: selectedSkillId,
@@ -116,20 +123,32 @@ const OwnSkillHubPage = () => {
         },
       };
 
+      setLinkDialogOpen(true); // Show link dialog after submitting skill
+      setOpen(false);
       addUserSkills(data)
         .then(() => {
-          setSnackbarMessage('Skill submitted successfully!');
+          setSnackbarMessage("Skill submitted successfully!");
           setSnackbarOpen(true);
-          handleClose();
+
+          setTimeout(() => {
+            setLinkDialogOpen(false); // Close link dialog after 2 seconds
+          }, 3000);
           // Fetch skills again after submission
-          
         })
         .catch((error) => {
-          console.error('Error submitting skill:', error);
-          if (error.response && error.response.data && error.response.data.error === "Certificate already exists") {
+          console.error("Error submitting skill:", error);
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.error === "Certificate already exists"
+          ) {
             setSnackbarMessage("Certificate already exists");
           } else {
-            setSnackbarMessage(error.response && error.response.data && error.response.data.error ? `Error: ${error.response.data.error}` : 'An error occurred while saving.');
+            setSnackbarMessage(
+              error.response && error.response.data && error.response.data.error
+                ? `Error: ${error.response.data.error}`
+                : "An error occurred while saving."
+            );
           }
           setSnackbarOpen(true);
         });
@@ -164,7 +183,9 @@ const OwnSkillHubPage = () => {
                   onChange={handleSkillChange}
                 >
                   {skillList.map((skillItem) => (
-                    <MenuItem key={skillItem.id} value={skillItem.skillName}>{skillItem.skillName}</MenuItem>
+                    <MenuItem key={skillItem.id} value={skillItem.skillName}>
+                      {skillItem.skillName}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -266,7 +287,9 @@ const OwnSkillHubPage = () => {
                   label="Supported Document Link"
                   type="text"
                   value={certificateSupportedDocumentLink}
-                  onChange={(e) => setCertificateSupportedDocumentLink(e.target.value)}
+                  onChange={(e) =>
+                    setCertificateSupportedDocumentLink(e.target.value)
+                  }
                   fullWidth
                 />
                 <Tooltip title="Make Sure link is publicly accessible">
@@ -332,7 +355,9 @@ const OwnSkillHubPage = () => {
                   label="Supported Document Link"
                   type="text"
                   value={projectSupportedDocumentLink}
-                  onChange={(e) => setProjectSupportedDocumentLink(e.target.value)}
+                  onChange={(e) =>
+                    setProjectSupportedDocumentLink(e.target.value)
+                  }
                   fullWidth
                 />
                 <Tooltip title="Make Sure link is publicly accessible">
@@ -361,10 +386,16 @@ const OwnSkillHubPage = () => {
           <Typography>Are you sure you want to submit this skill?</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleConfirmDialogClose(false)} color="primary">
+          <Button
+            onClick={() => handleConfirmDialogClose(false)}
+            color="primary"
+          >
             No
           </Button>
-          <Button onClick={() => handleConfirmDialogClose(true)} color="primary">
+          <Button
+            onClick={() => handleConfirmDialogClose(true)}
+            color="primary"
+          >
             Yes
           </Button>
         </DialogActions>
@@ -375,6 +406,24 @@ const OwnSkillHubPage = () => {
         onClose={handleSnackbarClose}
         message={snackbarMessage}
       />
+      <Dialog
+        open={linkDialogOpen}
+        onClose={() => setLinkDialogOpen(false)}
+        aria-labelledby="link-dialog-title"
+      >
+        <DialogTitle id="link-dialog-title">Visit this Link</DialogTitle>
+        <DialogContent>
+          <Link
+            to={
+              "https://www.hackerrank.com/challenges/staircase/problem?isFullScreen=true"
+            }
+          >
+            <Typography>
+              https://www.hackerrank.com/challenges/staircase/problem?isFullScreen=true
+            </Typography>
+          </Link>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

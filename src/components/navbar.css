@@ -1,21 +1,74 @@
 /* Navbar.css */
 nav {
-    background-color: #333;
-    color: #fff;
+  background-color: #333;
+  color: #fff;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.toolbar {
+  position: relative;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.bigNav{
+  display: flex;
+  gap: 0 15px;
+}
+
+.MuiButton-root{
+  text-transform: none !important;
+  font-size: 1rem !important;
+}
+
+.MuiToolbar-regular{
+  min-height: 64px !important;
+}
+
+.toggleBtn {
+  display: none;
+}
+
+
+@media screen and (max-width: 968px) {
+  .bigNav {
+    display: none;
   }
-  
-  nav ul {
-    list-style-type: none;
-    padding: 0;
+  .toggleBtn {
+    display: block;
+    position: absolute;
+    right: 0%;
+    top: 50%;
+    transform: translateY(-50%);
   }
-  
-  nav ul li {
-    display: inline;
-    margin-right: 20px;
+  .toggleBtn button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
   }
-  
-  nav ul li a {
-    color: #fff;
-    text-decoration: none;
+}
+
+@media screen and (min-width: 968px) {
+  .smallNav {
+    display: none;
   }
-  
+}

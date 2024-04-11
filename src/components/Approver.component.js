@@ -27,15 +27,20 @@ import {
   approveUserSkill,
 } from "../services/approver.service";
 import Rating from "@material-ui/lab/Rating";
+import Loading from "./loading.component";
+import "./approver.css";
 
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+const statusOptions = ["All", "Approved", "Pending", "Rejected", "None"];
+
 const ApproverList = () => {
   const [userSkills, setUserSkills] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("All"); // State for status filter
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedSkill, setSelectedSkill] = useState(null);
@@ -56,10 +61,10 @@ const ApproverList = () => {
   const [openStatusDialog, setOpenStatusDialog] = useState(false);
   const [selectedPendingSkill, setSelectedPendingSkill] = useState(null);
 
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const response = await approvalsForApprover();
         setUserSkills(response);
         setIsLoading(false);
@@ -175,38 +180,72 @@ const ApproverList = () => {
     setPopupMessage("");
   };
 
+  const filteredUserSkills = userSkills.filter((skill) =>
+    statusFilter === "All" ? true : skill.status.toLowerCase().includes(statusFilter.toLowerCase())
+  );
+
   return (
     <div>
-      <Typography variant="h5">Approvals</Typography>
+      <div style={{ padding: "10px", display: "flex", alignItems: "center", justifyContent: 'flex-end'}}>
+        <FormControl style={{ minWidth: "200px" }} variant="outlined">
+          <InputLabel id="status-filter-label">Filter by Status</InputLabel>
+          <Select
+            labelId="status-filter-label"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            size="small"
+            label="Filter by Status"
+          >
+            {statusOptions.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
       {isLoading ? (
-        <Typography>Loading...</Typography>
+        <Loading />
       ) : error ? (
         <Typography>Error: {error}</Typography>
-      ) : userSkills.length > 0 ? (
-        <TableContainer component={Paper}>
+      ) : filteredUserSkills.length > 0 ? (
+        <TableContainer component={Paper} className="appTableCon">
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>S.No.</TableCell>
-                <TableCell>User Name</TableCell>
-                <TableCell>Skill Name</TableCell>
-                <TableCell>Proficiency</TableCell>
-                <TableCell>Certificate</TableCell>
-                <TableCell>Project Experience</TableCell>
-                <TableCell>HackerRank Percentage</TableCell>
-                <TableCell>Submission Date</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell style={{ textAlign: "center" }}>S.No.</TableCell>
+                <TableCell style={{ textAlign: "center" }}>User Name</TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  Skill Name
+                </TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  Proficiency
+                </TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  Certificate
+                </TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  Project Experience
+                </TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  HackerRank Percentage
+                </TableCell>
+                <TableCell style={{ textAlign: "center" }}>
+                  Submission Date
+                </TableCell>
+                <TableCell style={{ textAlign: "center" }}>Status</TableCell>
+                <TableCell style={{ textAlign: "center" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {userSkills.map((skill, index) => (
+              {filteredUserSkills.map((skill, index) => (
                 <TableRow key={skill._id}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>
+                  <TableCell className="flex ">
                     <Button
                       color="primary"
                       onClick={() => handleUserClick(skill)}
+                      className="w-full center"
                     >
                       {`${skill.firstName} ${skill.lastName}`}
                     </Button>
@@ -215,6 +254,7 @@ const ApproverList = () => {
                     <Button
                       color="primary"
                       onClick={() => handleSkillClick(skill.userSkill)}
+                      className="center w-full"
                     >
                       {capitalizeFirstLetter(skill.userSkill.skillId.skillName)}
                     </Button>
@@ -222,13 +262,15 @@ const ApproverList = () => {
                   <TableCell>
                     {capitalizeFirstLetter(skill.userSkill.proficiency)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{ textAlign: "center" }}>
                     {skill.userSkill.certificateId ? (
                       <Button
                         color="primary"
                         onClick={() =>
                           handleCertificateClick(skill.userSkill.certificateId)
                         }
+                        className="center"
+                        style={{ textAlign: "center" }}
                       >
                         View
                       </Button>
@@ -236,7 +278,7 @@ const ApproverList = () => {
                       "No certificate attached"
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={{ textAlign: "center" }}>
                     {skill.userSkill.projectExperienceId ? (
                       <Button
                         color="primary"
@@ -262,11 +304,21 @@ const ApproverList = () => {
                     <Button
                       color="primary"
                       onClick={() => handleStatusDialogOpen(skill)}
+                      style={{
+                        color:
+                          skill.status === "Pending"
+                            ? "orange"
+                            : skill.status === "Approved"
+                            ? "green"
+                            : skill.status === "Rejected"
+                            ? "red"
+                            : "black",
+                      }}
                     >
                       {skill.status}
                     </Button>
                   </TableCell>
-                  
+
                   <TableCell>
                     <FormControl variant="outlined" fullWidth>
                       <InputLabel id={`select-label-${index}`}>
@@ -511,28 +563,36 @@ const ApproverList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={openStatusDialog} onClose={() => setOpenStatusDialog(false)}>
-  <DialogTitle>Status: {selectedPendingSkill ? selectedPendingSkill.status : ""}</DialogTitle>
-  <DialogContent>
-    <DialogContentText>
-      <Typography>
-        <strong>Status:</strong> {selectedPendingSkill ? selectedPendingSkill.status : ""}
-      </Typography>
-      <Typography>
-        <strong>Comments:</strong> {selectedPendingSkill ? selectedPendingSkill.comments || "" : ""}
-      </Typography>
-      <Typography>
-        <strong>Rating:</strong> {selectedPendingSkill ? selectedPendingSkill.rating || "" : ""}
-      </Typography>
-    </DialogContentText>
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={() => setOpenStatusDialog(false)} color="primary">
-      Close
-    </Button>
-  </DialogActions>
-</Dialog>
-    {/* Snackbar for success message */}
+      <Dialog
+        open={openStatusDialog}
+        onClose={() => setOpenStatusDialog(false)}
+      >
+        <DialogTitle>
+          Status: {selectedPendingSkill ? selectedPendingSkill.status : ""}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography>
+              <strong>Status:</strong>{" "}
+              {selectedPendingSkill ? selectedPendingSkill.status : ""}
+            </Typography>
+            <Typography>
+              <strong>Comments:</strong>{" "}
+              {selectedPendingSkill ? selectedPendingSkill.comments || "" : ""}
+            </Typography>
+            <Typography>
+              <strong>Rating:</strong>{" "}
+              {selectedPendingSkill ? selectedPendingSkill.rating || "" : ""}
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenStatusDialog(false)} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Snackbar for success message */}
       <Snackbar
         open={!!popupMessage}
         autoHideDuration={6000} // Change duration as needed

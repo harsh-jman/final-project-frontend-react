@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { resetPassword } from '../services/authService.service';
+import './reset.css'
 
 const ResetPasswordForm = () => {
     const [formData, setFormData] = useState({
@@ -43,20 +44,21 @@ const ResetPasswordForm = () => {
 
     return (
         <div className="reset-password-form-container">
-            <form onSubmit={handleSubmit}>
-                <div>
+            <h2>Reset Password</h2>
+            <form onSubmit={handleSubmit} className='resetForm'>
+                <div className='inputCon'>
                     <label>Email:</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} />
                 </div>
-                <div>
+                <div className='inputCon'>
                     <label>Current Password:</label>
                     <input type="password" name="currentPassword" value={formData.currentPassword} onChange={handleChange} />
                 </div>
-                <div>
+                <div className='inputCon'>
                     <label>New Password:</label>
                     <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} />
                 </div>
-                <div>
+                <div className='inputCon'>
                     <label>Confirm Password:</label>
                     <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
                 </div>
@@ -66,7 +68,7 @@ const ResetPasswordForm = () => {
                         Password reset successfully. Click <span onClick={handleBackToLogin} className="login-link">here</span> to login.
                     </div>
                 ) : (
-                    <button type="submit">Reset Password</button>
+                    <button type="submit" className='resetBtn'>Reset Password</button>
                 )}
             </form>
         </div>

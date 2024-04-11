@@ -1,0 +1,40 @@
+.reset-password-form-container {
+  margin: 0;
+  width: 350px;
+  height: 400px;
+
+  padding: 8px;
+  box-sizing: border-box;
+
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 135, 76, 0.37);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 10px;
+  border: 1px solid rgba(31, 135, 76, 0.18);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  gap: 15px;
+}
+
+.resetForm{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 85%;
+}
+
+.inputCon{
+    width: 100%;
+}
+
+.resetBtn{
+    padding: 4px 6px;
+    background-color: transparent;
+    border-radius: 8px;
+    border: 1px solid black;
+    cursor: pointer;
+}

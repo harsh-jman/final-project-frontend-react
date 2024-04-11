@@ -1,0 +1,21 @@
+.profileCon{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    gap: 8px;
+}
+
+.profileCon label{
+    font-weight: 600;
+    font-style: italic;
+    font-size: 1rem;
+}
+
+.profileCon input{
+    margin-bottom: 12px;
+    outline: none;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid black;
+    cursor: default;
+}
