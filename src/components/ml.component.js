@@ -15,40 +15,6 @@ import {
 } from "@material-ui/core";
 import { recommend } from "../services/ml.service";
 
-const dummyData = [
-  {
-    data: {
-      0: {
-        Similarity: 0.9793342626859092,
-        fullname: "Isabella Garcia",
-        userId_x: "66129495addf941b98f24c54",
-      },
-      1: {
-        Similarity: 0.9460160980120138,
-        fullname: "Aarav Gupta",
-        userId_x: "66129499addf941b98f24c58",
-      },
-      2: {
-        Similarity: 0.9443088460057428,
-        fullname: "Sofia Singh",
-        userId_x: "66129509addf941b98f24c68",
-      },
-      3: {
-        Similarity: 0.9429702584617884,
-        fullname: "Lila Wang",
-        userId_x: "66129497addf941b98f24c56",
-      },
-      4: {
-        Similarity: 0.9378489257967608,
-        fullname: "Aarav Sharma",
-        userId_x: "66129899addf941b98f24c982",
-      },
-    },
-    temperature: "0.5",
-    text: "Well-crafted e-commerce platform development using Magento. Impressed with the user experience and efficient online retail solutions. Excellent attention to performance optimization.",
-  },
-];
-
 const RecommendationComponent = () => {
   const [text, setText] = useState("");
   const [temperature, setTemperature] = useState(0.5);
@@ -65,10 +31,19 @@ const RecommendationComponent = () => {
   };
 
   const handleRecommendClick = async () => {
+    if (!text.trim()) {
+      alert("Please enter text to get recommendations.");
+      return;
+    }
     setLoading(true);
     try {
-      const responseData = await recommend(text, temperature);
-      setResponse(responseData);
+      const requestData = {
+        text: text,
+        temperature: temperature.toString(),
+        count: count.toString(),
+      };
+      const responseData = await recommend(requestData);
+      setResponse(responseData.data);
     } catch (error) {
       console.error("Error recommending:", error);
     } finally {
@@ -155,23 +130,12 @@ const RecommendationComponent = () => {
             </Grid>
           </Grid>
         </Grid>
-        {/* <Grid item xs={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleRecommendClick}
-          >
-            {loading ? "Loading..." : "Recommend"}
-          </Button>
-        </Grid> */}
         <Grid item xs={12}>
           <Typography variant="body1" style={{ whiteSpace: "pre-line" }}>
-            {dummyData.map((item, index) => (
-              <TableContainer
-                key={index}
-                component={Paper}
-                style={{ marginTop: "20px" }}
-              >
+            {response.length === 0 ? (
+              <p>Please enter text to get recommendations.</p>
+            ) : (
+              <TableContainer component={Paper} style={{ marginTop: "20px" }}>
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -181,17 +145,17 @@ const RecommendationComponent = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {Object.values(item.data).map((data, dataIndex) => (
+                    {Object.values(response).map((data, dataIndex) => (
                       <TableRow key={dataIndex}>
                         <TableCell>{data.userId_x}</TableCell>
                         <TableCell>{data.fullname}</TableCell>
-                        <TableCell>{data.Similarity.toFixed(2)}</TableCell>
+                        <TableCell>{data.Similarity}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TableContainer>
-            ))}
+            )}
           </Typography>
         </Grid>
       </Grid>

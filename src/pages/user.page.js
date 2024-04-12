@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Paper } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
+import { getUserDash } from "../services/skills.service";
 import "./userPage.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -20,104 +21,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const dummyData = [
-  {
-    totalUserSkills: 3,
-    skillStatusCounts: [
-      {
-        _id: "Approved",
-        count: 0,
-      },
-      {
-        _id: "Rejected",
-        count: 1,
-      },
-      {
-        _id: "Pending",
-        count: 2,
-      },
-    ],
-    approverStatusCounts: [
-      {
-        _id: "Approved",
-        count: 0,
-      },
-      {
-        _id: "Rejected",
-        count: 0,
-      },
-      {
-        _id: "Pending",
-        count: 1,
-      },
-    ],
-    averageHackerRankScore: 0,
-    averageRating: 2,
-    notCoveredCertificateNames: ["sdada"],
-    notCoveredSkillNames: [
-      "JavaScript",
-      "Python Programming",
-      "Data Analysis",
-      "Project Management",
-      "Cloud Computing",
-      "Mobile App Development",
-      "test",
-      "123",
-      "adada",
-      "dasda",
-      "add",
-    ],
-  },
-  {
-    approvalDeskCounts: [
-      {
-        _id: "Approved",
-        count: 0,
-      },
-      {
-        _id: "Rejected",
-        count: 1,
-      },
-      {
-        _id: "Pending",
-        count: 2,
-      },
-    ],
-  },
-];
-
 const UserPage = () => {
   const classes = useStyles();
+  const [userData, setUserData] = useState(null);
 
-  // Extracting data from dummyData
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const userData = await getUserDash(); // Assuming getUserDash returns the user data
+        setUserData(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+
   const {
-    skillStatusCounts,
+    totalUserSkills,
+    averageHackerRankScore,
+    averageRating,
+    skillStatusCounts = [],
+    approverStatusCounts = [],
     notCoveredSkillNames,
     notCoveredCertificateNames,
-  } = dummyData[0];
+  } = userData;
 
   const approvedCount = skillStatusCounts.find(
     (status) => status._id === "Approved"
-  ).count;
+  )?.count || 0;
   const pendingCount = skillStatusCounts.find(
     (status) => status._id === "Pending"
-  ).count;
+  )?.count || 0;
   const rejectedCount = skillStatusCounts.find(
     (status) => status._id === "Rejected"
-  ).count;
+  )?.count || 0;
 
-  // Extracting data from user approval desk dummyData
-  const { approvalDeskCounts } = dummyData[1];
-
-  const approvalDeskApprovedCount = approvalDeskCounts.find(
+  const approvalDeskApprovedCount = approverStatusCounts.find(
     (status) => status._id === "Approved"
-  ).count;
-  const approvalDeskPendingCount = approvalDeskCounts.find(
+  )?.count || 0;
+  const approvalDeskPendingCount = approverStatusCounts.find(
     (status) => status._id === "Pending"
-  ).count;
-  const approvalDeskRejectedCount = approvalDeskCounts.find(
+  )?.count || 0;
+  const approvalDeskRejectedCount = approverStatusCounts.find(
     (status) => status._id === "Rejected"
-  ).count;
+  )?.count || 0;
 
   return (
     <div
@@ -139,7 +92,7 @@ const UserPage = () => {
               <Paper className={classes.paper}>
                 <div>
                   <h3>Total User Skills:</h3>
-                  <h1>{dummyData[0].totalUserSkills}</h1>
+                  <h1>{totalUserSkills}</h1>
                 </div>
               </Paper>
             </Grid>
@@ -147,7 +100,7 @@ const UserPage = () => {
               <Paper className={classes.paper}>
                 <div>
                   <h3>Average HackerRank Score:</h3>
-                  <h1>{dummyData[0].averageHackerRankScore}</h1>
+                  <h1>{averageHackerRankScore}</h1>
                 </div>
               </Paper>
             </Grid>
@@ -155,7 +108,7 @@ const UserPage = () => {
               <Paper className={classes.paper}>
                 <div>
                   <h3>Average Rating:</h3>
-                  <h1>{dummyData[0].averageRating}</h1>
+                  <h1>{averageRating}</h1>
                 </div>
               </Paper>
             </Grid>

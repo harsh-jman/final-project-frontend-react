@@ -1,4 +1,3 @@
-import { login } from '../utils/api.util';
 import { makeRequestML } from '../utils/MLapi.util';
 
 export const recommend = async (userData) => {

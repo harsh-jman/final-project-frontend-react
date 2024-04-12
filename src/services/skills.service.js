@@ -40,3 +40,13 @@ export const getUserSkills = async (userData) => {
         throw error;
     }
 };
+
+
+export const getUserDash = async (userData) => {
+    try {
+        const response = await makeRequest('get', 'api/users/getUserPersonalData', userData);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
