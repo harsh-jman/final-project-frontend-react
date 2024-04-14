@@ -53,7 +53,7 @@ const LoginPage = () => {
     <div className="hello">
       <header className="loginHeader">
         <Link to={"/"}>
-          <h2>My App</h2>
+          <h2>Skill Matrix</h2>
         </Link>
       </header>
       <div className="main-con">

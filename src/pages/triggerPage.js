@@ -1,19 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import { getLogsData, makeLog } from "../services/logs.service";
-import { mlTrain, dataIngest, edaReport, dbtDocs, dbtRun } from "../services/triggers.service";
+import { useNavigate } from 'react-router-dom';
+
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import { getLogsData } from "../services/logs.service";
+import {
+  mlTrain,
+  dataIngest,
+  edaReport,
+  dbtDocs,
+  dbtRun,
+  edaReportView,
+  dbtDocsView
+} from "../services/triggers.service";
 import { withStyles } from "@mui/styles";
 
 const styles = {
   button: {
     width: "100%",
-    height: "100%"
-  }
+    height: "100%",
+  },
+  dbtDocsButton: {
+    marginRight: "10px", // Add margin to the right side of the DBT Docs button
+  },
 };
+
+
 
 const TriggerPage = ({ classes }) => {
   const [logsData, setLogsData] = useState([]);
-  const tasks = ['Data Ingestion', 'ML Training', 'EDA Report', 'DBT Docs', 'DBT Run'];
+
+  const navigate = useNavigate();
+  const tasks = [
+    "Data Ingestion",
+    "ML Training",
+    "EDA Report",
+    "DBT Docs",
+    "DBT Run",
+  ];
 
   useEffect(() => {
     // Fetch logs data from API
@@ -21,11 +53,10 @@ const TriggerPage = ({ classes }) => {
       try {
         const response = await getLogsData();
         setLogsData(response);
-        
+        // No need to set logs data here
       } catch (error) {
         console.error("Error fetching logs data:", error);
-
-              }
+      }
     };
     fetchData();
   }, []);
@@ -35,28 +66,18 @@ const TriggerPage = ({ classes }) => {
       // Make the API call specific to Data Ingestion task
       const triggerResponse = await dataIngest();
       console.log("Trigger data for Data Ingestion:", triggerResponse);
-  
       // Check if triggerResponse is valid (status code 200)
-      if (triggerResponse.status === 200) {
-        // Prepare the data payload for makeLog
-        const logData = {
-          level: 'info', // Example value
-          message: 'Data Ingestion completed successfully', // Example message
-          task: 'Data Ingestion' // Example task
-        };
-  
-        // Make a log entry with the prepared data payload
-        await makeLog(logData);
-  
-        // Show success message as a popup
-        alert("Data Ingestion completed successfully");
+      if (triggerResponse.status === "success") {
+        alert(
+          `Data Ingestion completed successfully. Time taken: ${triggerResponse.TimeTaken} ms`
+        );
       } else {
         console.log("Invalid trigger response:", triggerResponse);
         alert("Data Ingestion failed");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Error: " + error.message);
+      alert("Error occurred: " + error.message);
     }
   };
 
@@ -65,21 +86,11 @@ const TriggerPage = ({ classes }) => {
       // Make the API call specific to ML Training task
       const triggerResponse = await mlTrain();
       console.log("Trigger data for ML Training:", triggerResponse);
-  
       // Check if triggerResponse is valid (status code 200)
-      if (triggerResponse.status === 200) {
-        // Prepare the data payload for makeLog
-        const logData = {
-          level: 'info', // Example value
-          message: 'ML Training completed successfully', // Example message
-          task: 'ML Training' // Example task
-        };
-  
-        // Make a log entry with the prepared data payload
-        await makeLog(logData);
-  
-        // Show success message as a popup
-        alert("ML Training completed successfully");
+      if (triggerResponse.status === "success") {
+        alert(
+          `ML Training completed successfully. Time taken: ${triggerResponse.TimeTaken} ms`
+        );
       } else {
         console.log("Invalid trigger response:", triggerResponse);
         alert("ML Training failed");
@@ -93,25 +104,14 @@ const TriggerPage = ({ classes }) => {
   const handleEDAReportClick = async () => {
     try {
       // Make the API call specific to EDA Report task
-      const triggerResponse = await edaReport();
-      console.log("Trigger data for EDA Report:", triggerResponse);
-  
-      // Check if triggerResponse is valid (status code 200)
-      if (triggerResponse.status === 200) {
-        // Prepare the data payload for makeLog
-        const logData = {
-          level: 'info', // Example value
-          message: 'EDA Report completed successfully', // Example message
-          task: 'EDA Report' // Example task
-        };
-  
-        // Make a log entry with the prepared data payload
-        await makeLog(logData);
-  
-        // Show success message as a popup
-        alert("EDA Report completed successfully");
+      const response = await edaReport(); // Assuming edaReport is a function that makes API call
+
+      if (response.status === "success") {
+        alert(
+          `EDA Report completed successfully. Time taken: ${response.TimeTaken} ms`
+        );
       } else {
-        console.log("Invalid trigger response:", triggerResponse);
+        console.log("Invalid trigger response:", response);
         alert("EDA Report failed");
       }
     } catch (error) {
@@ -125,21 +125,12 @@ const TriggerPage = ({ classes }) => {
       // Make the API call specific to DBT Docs task
       const triggerResponse = await dbtDocs();
       console.log("Trigger data for DBT Docs:", triggerResponse);
-  
+
       // Check if triggerResponse is valid (status code 200)
-      if (triggerResponse.status === 200) {
-        // Prepare the data payload for makeLog
-        const logData = {
-          level: 'info', // Example value
-          message: 'DBT Docs completed successfully', // Example message
-          task: 'DBT Docs' // Example task
-        };
-  
-        // Make a log entry with the prepared data payload
-        await makeLog(logData);
-  
-        // Show success message as a popup
-        alert("DBT Docs completed successfully");
+      if (triggerResponse.status === "success") {
+        alert(
+          `DBT Docs completed successfully. Time taken: ${triggerResponse.TimeTaken} ms`
+        );
       } else {
         console.log("Invalid trigger response:", triggerResponse);
         alert("DBT Docs failed");
@@ -155,21 +146,12 @@ const TriggerPage = ({ classes }) => {
       // Make the API call specific to DBT Run task
       const triggerResponse = await dbtRun();
       console.log("Trigger data for DBT Run:", triggerResponse);
-  
+
       // Check if triggerResponse is valid (status code 200)
-      if (triggerResponse.status === 200) {
-        // Prepare the data payload for makeLog
-        const logData = {
-          level: 'info', // Example value
-          message: 'DBT Run completed successfully', // Example message
-          task: 'DBT Run' // Example task
-        };
-  
-        // Make a log entry with the prepared data payload
-        await makeLog(logData);
-  
-        // Show success message as a popup
-        alert("DBT Run completed successfully");
+      if (triggerResponse.status === "success") {
+        alert(
+          `DBT Run completed successfully. Time taken: ${triggerResponse.TimeTaken} ms`
+        );
       } else {
         console.log("Invalid trigger response:", triggerResponse);
         alert("DBT Run failed");
@@ -180,8 +162,53 @@ const TriggerPage = ({ classes }) => {
     }
   };
 
+  const handleEDAView = async () => {
+    try {
+      const response = await edaReportView();
+      const blob = new Blob([response], { type: 'text/html' });
+      const timestamp = new Date().toISOString().replace(/:/g, '-'); // Get current timestamp
+      const filename = `EDA_Report_${timestamp}.html`; // Construct filename with timestamp
+      const url = URL.createObjectURL(blob);
+  
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename); // Use filename with timestamp
+      document.body.appendChild(link);
+  
+      link.click();
+  
+      // Cleanup
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error fetching HTML content:', error);
+    }
+  };
+
+  const handleDBTView = () => {
+    try {
+      const url = process.env.REACT_APP_DBT_VIEW_URL;
+      if (url) {
+        window.open(url, '_blank'); // Open URL in a new tab
+      } else {
+        console.error('URL not found in environment variables.');
+      }
+    } catch (error) {
+      console.error('Error opening URL:', error);
+    }
+  };
+  
+
   return (
-    <div style={{ paddingTop: "90px", width: "95%", margin: "auto", height: "100%", boxSizing: "border-box" }}>
+    <div
+      style={{
+        paddingTop: "90px",
+        width: "95%",
+        margin: "auto",
+        height: "100%",
+        boxSizing: "border-box",
+      }}
+    >
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -192,45 +219,65 @@ const TriggerPage = ({ classes }) => {
           </TableHead>
           <TableBody>
             {tasks.map((task, index) => {
-              const taskLogs = logsData.find(log => log.task === task);
+              const taskLogs = logsData.find((log) => log.task === task);
               return (
                 <TableRow key={index}>
                   <TableCell>
-                    <Button 
-                      variant="contained" 
-                      className={classes.button} 
-                      onClick={() => {
-                        switch (task) {
-                          case 'Data Ingestion':
-                            handleDataIngestionClick();
-                            break;
-                          case 'ML Training':
-                            handleMLTrainingClick();
-                            break;
-                          case 'EDA Report':
-                            handleEDAReportClick();
-                            break;
-                          case 'DBT Docs':
-                            handleDBTDocsClick();
-                            break;
-                          case 'DBT Run':
-                            handleDBTRunClick();
-                            break;
-                          default:
-                            console.warn("Unhandled task:", task);
-                        }
-                      }}
-                    >
-                      {task}
-                    </Button>
+                    <div className={classes.actionButtons}>
+                      <Button
+                        variant="contained"
+                        className={`${classes.button} ${
+                          task === "DBT Docs" ? classes.dbtDocsButton : ""
+                        }`} // Conditionally apply dbtDocsButton class
+                        onClick={() => {
+                          switch (task) {
+                            case "Data Ingestion":
+                              handleDataIngestionClick();
+                              break;
+                            case "ML Training":
+                              handleMLTrainingClick();
+                              break;
+                            case "DBT Run":
+                              handleDBTRunClick();
+                              break;
+                            case "EDA Report":
+                              handleEDAReportClick();
+                              break;
+                            case "DBT Docs":
+                              handleDBTDocsClick();
+                              break;
+                            default:
+                              console.warn("Unhandled task:", task);
+                          }
+                        }}
+                      >
+                        {task}
+                      </Button>
+                      {task === "DBT Docs" && (
+                        <Button
+                          variant="contained"
+                          className={classes.button}
+                          onClick={handleDBTView}
+                        >
+                          View
+                        </Button>
+                      )}
+
+                      {task === "EDA Report" && (
+                        <Button
+                          variant="contained"
+                          className={classes.button}
+                          onClick={handleEDAView}
+                        >
+                          View
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     {taskLogs ? (
                       <div>
-                        <p>Task: {taskLogs.task}</p>
-                        <p>Message: {taskLogs.message}</p>
-                        <p>Level: {taskLogs.level}</p>
-                        <p>Created At: {new Date(taskLogs.createdAt).toLocaleString()}</p>
+                        <p>{new Date(taskLogs.createdAt).toLocaleString()}</p>
                       </div>
                     ) : (
                       <p>Not triggered yet</p>

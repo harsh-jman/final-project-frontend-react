@@ -10,7 +10,7 @@ const ForgetPasswordPage = ({ onSendResetEmail }) => {
     <>
       <header className="loginHeader">
         <Link to={"/"}>
-          <h2>My App</h2>
+          <h2>Skill Matrix</h2>
         </Link>
       </header>
 

@@ -29,9 +29,27 @@ export const edaReport = async () => {
     }
 };
 
+export const edaReportView = async () => {
+    try {
+        const response = await makeRequestML('get', '/getEDAfile');
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const dbtDocs = async () => {
     try {
-        const response = await makeRequestML('get', '/ingest/');
+        const response = await makeRequestML('get', '/dbtDocsGenerate');
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const dbtDocsView = async () => {
+    try {
+        const response = await makeRequestML('get', '/dbtDocsGenerateFile');
         return response;
     } catch (error) {
         throw error;
@@ -40,7 +58,7 @@ export const dbtDocs = async () => {
 
 export const dbtRun = async () => {
     try {
-        const response = await makeRequestML('get', '/ingest/');
+        const response = await makeRequestML('get', '/dbtRun');
         return response;
     } catch (error) {
         throw error;
